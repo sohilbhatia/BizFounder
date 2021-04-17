@@ -12,6 +12,18 @@ titleView.frame.size.height = 140
 titleView.frame.origin.x = 35
 titleView.frame.origin.y = 65
 
+
+var cashBalance = Int()
+var netWorth = Int()
+
+netWorth = 25000
+cashBalance = 25000
+
+//let cfURL = Bundle.main.url(forResource: "Comfortaa-Bold", withExtension: "tff")! as CFURL
+//CTFontManagerRegisterFontsForURL(cfURL, CTFontManagerScope.process, nil)
+
+let mainFont = UIFont(name: "Arial", size:  30.0)
+
 let business = UIImage(named: "businessSpace.png")!
 let businessView = UIImageView(image: business)
 businessView.image = business
@@ -29,6 +41,47 @@ itemView.frame.size.height = 60
 itemView.frame.origin.x = -80
 itemView.frame.origin.y = 15
 itemView.isHidden = true
+
+
+let cashView = UITextView()
+cashView.text = "Total Cash: "
+cashView.backgroundColor = UIColor(red: 252/255, green: 252/255, blue: 252/255, alpha: 1)
+cashView.font = mainFont
+cashView.frame.size.width = 200
+cashView.frame.size.height = 60
+cashView.frame.origin.x = 420
+cashView.frame.origin.y = 900
+cashView.isHidden = true
+
+let worthAmnt = UITextView()
+worthAmnt.text = "$" + String(netWorth)
+worthAmnt.backgroundColor = UIColor(red: 252/255, green: 252/255, blue: 252/255, alpha: 1)
+worthAmnt.font = mainFont
+worthAmnt.frame.size.width = 150
+worthAmnt.frame.size.height = 60
+worthAmnt.frame.origin.x = 200
+worthAmnt.frame.origin.y = 900
+worthAmnt.isHidden = true
+
+let cashAmnt = UITextView()
+cashAmnt.text = "$" + String(cashBalance)
+cashAmnt.backgroundColor = UIColor(red: 252/255, green: 252/255, blue: 252/255, alpha: 1)
+cashAmnt.font = mainFont
+cashAmnt.frame.size.width = 150
+cashAmnt.frame.size.height = 60
+cashAmnt.frame.origin.x = 580
+cashAmnt.frame.origin.y = 900
+cashAmnt.isHidden = true
+
+let netWrth = UITextView()
+netWrth.text = "Net Worth: "
+netWrth.backgroundColor = UIColor(red: 252/255, green: 252/255, blue: 252/255, alpha: 1)
+netWrth.font = mainFont
+netWrth.frame.size.width = 200
+netWrth.frame.size.height = 60
+netWrth.frame.origin.x = 40
+netWrth.frame.origin.y = 900
+netWrth.isHidden = true
 
 let funds = UIImage(named: "funds.png")!
 let fundsView = UIImageView(image: funds)
@@ -106,6 +159,11 @@ class TitleViewController: UIViewController {
         view.addSubview(fundsView)
         view.addSubview(empView)
         view.addSubview(markView)
+        view.addSubview(cashView)
+        view.addSubview(netWrth)
+        view.addSubview(worthAmnt)
+        view.addSubview(cashAmnt)
+        
         
         i.addTarget(self, action: #selector(iceAction), for: .touchDown)
         c.addTarget(self, action: #selector(coffeeAction), for: .touchDown)
@@ -176,6 +234,27 @@ class TitleViewController: UIViewController {
                     fundsView.alpha = 1
                 })
                 
+                fundsView.alpha = 0
+                fundsView.isHidden = false
+                UIView.animate(withDuration: 3, delay: 5/10, options: .curveEaseOut, animations: {
+                    fundsView.alpha = 1
+                })
+                cashView.alpha = 0
+                cashView.isHidden = false
+                cashView.fadeIn()
+                
+                cashAmnt.alpha = 0
+                cashAmnt.isHidden = false
+                cashAmnt.fadeIn()
+                
+                netWrth.isHidden = false
+                netWrth.alpha = 0
+                netWrth.fadeI()
+                
+                worthAmnt.isHidden = false
+                worthAmnt.alpha = 0
+                worthAmnt.fadeI()
+                
                 
                 
             }
@@ -186,8 +265,40 @@ class TitleViewController: UIViewController {
         sender.isHidden = false
     }
     
+
+    
+}
+public extension UIView {
+    
+ func fadeIn(duration: TimeInterval = 3.0) {
+     UIView.animate(withDuration: duration, animations: {
+        self.alpha = 1.0
+     })
+ }
+
+func fadeOut(duration: TimeInterval = 1.0) {
+    UIView.animate(withDuration: duration, animations: {
+        self.alpha = 0.0
+    })
+  }
+
 }
 
+public extension UITextView {
+    
+ func fadeI(duration: TimeInterval = 3.0) {
+     UITextView.animate(withDuration: duration, animations: {
+        self.alpha = 1.0
+     })
+ }
+
+func fadeO(duration: TimeInterval = 1.0) {
+    UITextView.animate(withDuration: duration, animations: {
+        self.alpha = 0.0
+    })
+  }
+
+}
 
 
 let master = TitleViewController()

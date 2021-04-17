@@ -83,14 +83,7 @@ netWrth.frame.origin.x = 40
 netWrth.frame.origin.y = 900
 netWrth.isHidden = true
 
-let funds = UIImage(named: "funds.png")!
-let fundsView = UIImageView(image: funds)
-fundsView.image = funds
-fundsView.frame.size.width = 400
-fundsView.frame.size.height = 60
-fundsView.frame.origin.x = 110
-fundsView.frame.origin.y = 15
-fundsView.isHidden = true
+
 
 let emp = UIImage(named: "employees.png")!
 let empView = UIImageView(image: emp)
@@ -129,6 +122,14 @@ sceneView.frame.origin.x = 0
 sceneView.frame.origin.y = 0
 sceneView.isHidden = false
 
+let funds = UIButton(type: UIButton.ButtonType.custom) as UIButton
+let fundsView = UIImage(named: "funds.png") as UIImage?
+funds.frame = CGRect(x: 110, y: 15, width: 400, height: 60)
+funds.setImage(fundsView, for: [])
+funds.contentMode = .center
+funds.imageView?.contentMode = .scaleAspectFit
+funds.isHidden = true
+
 let c = UIButton(type: UIButton.ButtonType.custom) as UIButton
 let cTab = UIImage(named: "cTab.png") as UIImage?
 c.frame = CGRect(x: -240, y: 450, width: 900, height: 300)
@@ -156,7 +157,7 @@ class TitleViewController: UIViewController {
         view.addSubview(sceneView)
         view.addSubview(businessView)
         view.addSubview(itemView)
-        view.addSubview(fundsView)
+        view.addSubview(funds)
         view.addSubview(empView)
         view.addSubview(markView)
         view.addSubview(cashView)
@@ -167,6 +168,7 @@ class TitleViewController: UIViewController {
         
         i.addTarget(self, action: #selector(iceAction), for: .touchDown)
         c.addTarget(self, action: #selector(coffeeAction), for: .touchDown)
+        funds.addTarget(self, action: #selector(itemsAction), for: .touchDown)
         
         i.alpha = 0
         i.isHidden = false
@@ -185,6 +187,13 @@ class TitleViewController: UIViewController {
         })
         
         
+    }
+    @objc func itemsAction(sender: UIButton) {
+        getItemsView().alpha = 0
+        view.addSubview(getItemsView())
+        UIView.animate(withDuration: 3, delay: 2/10, options: .curveEaseOut, animations: {
+           getItemsView().alpha = 1
+        })
     }
     @objc func coffeeAction(sender: UIButton) {
         sender.isHighlighted = false
@@ -228,16 +237,11 @@ class TitleViewController: UIViewController {
                     markView.alpha = 1
                 })
                 
-                fundsView.alpha = 0
-                fundsView.isHidden = false
-                UIView.animate(withDuration: 3, delay: 5/10, options: .curveEaseOut, animations: {
-                    fundsView.alpha = 1
-                })
                 
-                fundsView.alpha = 0
-                fundsView.isHidden = false
+                funds.alpha = 0
+                funds.isHidden = false
                 UIView.animate(withDuration: 3, delay: 5/10, options: .curveEaseOut, animations: {
-                    fundsView.alpha = 1
+                    funds.alpha = 1
                 })
                 cashView.alpha = 0
                 cashView.isHidden = false

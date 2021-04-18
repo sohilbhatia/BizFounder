@@ -3,6 +3,9 @@ import UIKit
 import PlaygroundSupport
 import SceneKit
 
+
+public var loanVal = 0.0
+
 let frameOfMainView = CGSize(width: 900, height: 700)
 let title = UIImage(named: "TITLE.png")!
 let titleView = UIImageView(image: title)
@@ -12,6 +15,15 @@ titleView.frame.size.height = 140
 titleView.frame.origin.x = 35
 titleView.frame.origin.y = 65
 
+let loan = UITextView()
+loan.text = "$ " + String(loanVal)
+loan.backgroundColor = UIColor(red: 245/255, green: 245/255, blue: 245/255, alpha: 1)
+loan.font = UIFont(name: "Arial", size: 25.0)
+loan.frame.size.width = 300
+loan.frame.size.height = 60
+loan.frame.origin.x = 320
+loan.frame.origin.y = 300
+loan.isHidden = false
 
 var cashBalance = Int()
 var netWorth = Int()
@@ -64,7 +76,7 @@ worthAmnt.frame.origin.y = 900
 worthAmnt.isHidden = true
 
 let cashAmnt = UITextView()
-cashAmnt.text = "$" + String(cashBalance)
+cashAmnt.text = "$" + String(cashBalance + Int(loanValue))
 cashAmnt.backgroundColor = UIColor(red: 252/255, green: 252/255, blue: 252/255, alpha: 1)
 cashAmnt.font = mainFont
 cashAmnt.frame.size.width = 150
@@ -122,6 +134,14 @@ sceneView.frame.origin.x = 0
 sceneView.frame.origin.y = 0
 sceneView.isHidden = false
 
+let test = UIButton(type: UIButton.ButtonType.custom) as UIButton
+let testView = UIImage(named: "mockButton.png") as UIImage?
+test.frame = CGRect(x: -25, y: 222, width: 400, height: 60)
+test.setImage(testView, for: [])
+test.contentMode = .center
+test.imageView?.contentMode = .scaleAspectFit
+test.isHidden = false
+
 let funds = UIButton(type: UIButton.ButtonType.custom) as UIButton
 let fundsView = UIImage(named: "funds.png") as UIImage?
 funds.frame = CGRect(x: 110, y: 15, width: 400, height: 60)
@@ -164,14 +184,22 @@ class TitleViewController: UIViewController {
         view.addSubview(netWrth)
         view.addSubview(worthAmnt)
         view.addSubview(cashAmnt)
+        view.addSubview(test)
+        
         
         
         i.addTarget(self, action: #selector(iceAction), for: .touchDown)
         c.addTarget(self, action: #selector(coffeeAction), for: .touchDown)
         funds.addTarget(self, action: #selector(itemsAction), for: .touchDown)
+        test.addTarget(self, action: #selector(add), for: .touchDown)
         
         i.alpha = 0
         i.isHidden = false
+        
+        if (closed == true) {
+            print("Hello")
+            cashBalance += Int(loanValue)
+        }
         UIView.animate(withDuration: 3, delay: 5/10, options: .curveEaseOut, animations: {
            i.alpha = 1
         })
@@ -194,6 +222,18 @@ class TitleViewController: UIViewController {
         UIView.animate(withDuration: 3, delay: 2/10, options: .curveEaseOut, animations: {
            getItemsView().alpha = 1
         })
+        getItemsView().isHidden = false
+    }
+    @objc func add(sender: UIButton) {
+        print(getItemsView().isHidden)
+        cashAmnt.text = "$" + String(cashBalance + Int(loanValue))
+        
+        DispatchQueue.main.async() {
+            getItemsView().removeFromSuperview()
+            getItemsView().isHidden = true
+            self.view.sendSubviewToBack(getItemsView())
+        }
+        test.isHidden = true
     }
     @objc func coffeeAction(sender: UIButton) {
         sender.isHighlighted = false

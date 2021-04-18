@@ -45,14 +45,14 @@ businessView.frame.origin.x = 35
 businessView.frame.origin.y = 140
 businessView.isHidden = true
 
-let item = UIImage(named: "items.png")!
-let itemView = UIImageView(image: item)
-itemView.image = item
-itemView.frame.size.width = 400
-itemView.frame.size.height = 60
-itemView.frame.origin.x = -80
-itemView.frame.origin.y = 15
-itemView.isHidden = true
+let item = UIButton(type: UIButton.ButtonType.custom) as UIButton
+let itemView = UIImage(named: "items.png") as UIImage?
+item.frame = CGRect(x: -80, y: 15, width: 400, height: 60)
+item.setImage(itemView, for: [])
+item.contentMode = .center
+item.imageView?.contentMode = .scaleAspectFit
+item.isHidden = true
+
 
 
 let cashView = UITextView()
@@ -176,7 +176,7 @@ class TitleViewController: UIViewController {
         view.addSubview(typeView)
         view.addSubview(sceneView)
         view.addSubview(businessView)
-        view.addSubview(itemView)
+        view.addSubview(item)
         view.addSubview(funds)
         view.addSubview(empView)
         view.addSubview(markView)
@@ -192,6 +192,7 @@ class TitleViewController: UIViewController {
         c.addTarget(self, action: #selector(coffeeAction), for: .touchDown)
         funds.addTarget(self, action: #selector(itemsAction), for: .touchDown)
         test.addTarget(self, action: #selector(add), for: .touchDown)
+        item.addTarget(self, action: #selector(storeAction), for: .touchDown)
         
         i.alpha = 0
         i.isHidden = false
@@ -224,6 +225,16 @@ class TitleViewController: UIViewController {
         })
         getItemsView().isHidden = false
     }
+    
+    @objc func storeAction(sender: UIButton) {
+        getStoreView().alpha = 0
+        view.addSubview(getStoreView())
+        UIView.animate(withDuration: 3, delay: 2/10, options: .curveEaseOut, animations: {
+            getStoreView().alpha = 1
+        })
+        getStoreView().isHidden = false
+    }
+    
     @objc func add(sender: UIButton) {
         print(getItemsView().isHidden)
         cashAmnt.text = "$" + String(cashBalance + Int(loanValue))
@@ -233,6 +244,7 @@ class TitleViewController: UIViewController {
             getItemsView().isHidden = true
             self.view.sendSubviewToBack(getItemsView())
         }
+        test.fadeOut()
         test.isHidden = true
     }
     @objc func coffeeAction(sender: UIButton) {
@@ -259,10 +271,10 @@ class TitleViewController: UIViewController {
                    businessView.alpha = 1
                 })
                 
-                itemView.alpha = 0
-                itemView.isHidden = false
+                item.alpha = 0
+                item.isHidden = false
                 UIView.animate(withDuration: 3, delay: 5/10, options: .curveEaseOut, animations: {
-                    itemView.alpha = 1
+                    item.alpha = 1
                 })
                 
                 empView.alpha = 0

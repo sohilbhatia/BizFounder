@@ -96,14 +96,14 @@ netWrth.frame.origin.y = 900
 netWrth.isHidden = true
 
 
+let emp = UIButton(type: UIButton.ButtonType.custom) as UIButton
+let empView = UIImage(named: "employees.png") as UIImage?
+emp.frame = CGRect(x: 300, y: 15, width: 400, height: 60)
+emp.setImage(empView, for: [])
+emp.contentMode = .center
+emp.imageView?.contentMode = .scaleAspectFit
+emp.isHidden = true
 
-let emp = UIImage(named: "employees.png")!
-let empView = UIImageView(image: emp)
-empView.frame.size.width = 400
-empView.frame.size.height = 60
-empView.frame.origin.x = 300
-empView.frame.origin.y = 15
-empView.isHidden = true
 
 let mark = UIImage(named: "marketing.png")!
 let markView = UIImageView(image: mark)
@@ -140,7 +140,15 @@ test.frame = CGRect(x: -25, y: 222, width: 400, height: 60)
 test.setImage(testView, for: [])
 test.contentMode = .center
 test.imageView?.contentMode = .scaleAspectFit
-test.isHidden = false
+test.isHidden = true
+
+let close2 = UIButton(type: UIButton.ButtonType.custom) as UIButton
+let close2View = UIImage(named: "mockButton.png") as UIImage?
+close2.frame = CGRect(x: -25, y: 222, width: 400, height: 60)
+close2.setImage(testView, for: [])
+close2.contentMode = .center
+close2.imageView?.contentMode = .scaleAspectFit
+close2.isHidden = true
 
 let funds = UIButton(type: UIButton.ButtonType.custom) as UIButton
 let fundsView = UIImage(named: "funds.png") as UIImage?
@@ -178,13 +186,14 @@ class TitleViewController: UIViewController {
         view.addSubview(businessView)
         view.addSubview(item)
         view.addSubview(funds)
-        view.addSubview(empView)
+        view.addSubview(emp)
         view.addSubview(markView)
         view.addSubview(cashView)
         view.addSubview(netWrth)
         view.addSubview(worthAmnt)
         view.addSubview(cashAmnt)
         view.addSubview(test)
+        view.addSubview(close2)
         
         
         
@@ -193,6 +202,8 @@ class TitleViewController: UIViewController {
         funds.addTarget(self, action: #selector(itemsAction), for: .touchDown)
         test.addTarget(self, action: #selector(add), for: .touchDown)
         item.addTarget(self, action: #selector(storeAction), for: .touchDown)
+        close2.addTarget(self, action: #selector(closeAction), for: .touchDown)
+        emp.addTarget(self, action: #selector(empAction), for: .touchDown)
         
         i.alpha = 0
         i.isHidden = false
@@ -224,7 +235,58 @@ class TitleViewController: UIViewController {
            getItemsView().alpha = 1
         })
         getItemsView().isHidden = false
+        test.isHidden = false
     }
+    @objc func empAction(sender: UIButton) {
+        getItemsView().alpha = 0
+        view.addSubview(getItemsView())
+        UIView.animate(withDuration: 3, delay: 2/10, options: .curveEaseOut, animations: {
+           getItemsView().alpha = 1
+        })
+        getItemsView().isHidden = false
+        test.isHidden = false
+    }
+    
+    @objc func closeAction(sender: UIButton) {
+        let itemExpenses = (eQuantity * espressoPrice) + (cQuantity * cupPrice) + (sQuantity * steamerPrice)
+        cashBalance = cashBalance - Int(itemExpenses)
+        cashAmnt.text = "$" + String(cashBalance)
+        close2.isHidden = true
+        let cups = "cupRack.png"
+        let image = UIImage(named: cups)
+        var i = 0
+        var space = 0
+        while(i<cQuantity) {
+            let imageView = UIImageView(image: image!)
+            imageView.frame = CGRect(x: 120 + space, y: 200, width: 120, height: 135)
+            view.addSubview(imageView)
+            space += 180
+            i+=1
+        }
+        let esp = "espMachine.png"
+        let espImage = UIImage(named: esp)
+        var a = 0
+        var aSpace = 0
+        while(a<eQuantity) {
+            let espView = UIImageView(image: espImage!)
+            espView.frame = CGRect(x: 120 + aSpace, y: 390, width: 96, height: 108)
+            view.addSubview(espView)
+            aSpace += 180
+            a+=1
+        }
+        let stea = "steamer.png"
+        let steaImage = UIImage(named: stea)
+        var s = 0
+        var sSpace = 0
+        while(s<sQuantity) {
+            let steaView = UIImageView(image: steaImage!)
+            steaView.frame = CGRect(x: 120 + sSpace, y: 580, width: 96, height: 108)
+            view.addSubview(steaView)
+            sSpace += 180
+            s+=1
+        }
+    }
+        
     
     @objc func storeAction(sender: UIButton) {
         getStoreView().alpha = 0
@@ -233,12 +295,13 @@ class TitleViewController: UIViewController {
             getStoreView().alpha = 1
         })
         getStoreView().isHidden = false
+        close2.isHidden = false
     }
     
     @objc func add(sender: UIButton) {
         print(getItemsView().isHidden)
-        cashAmnt.text = "$" + String(cashBalance + Int(loanValue))
-        
+        cashBalance = cashBalance + Int(loanValue)
+        cashAmnt.text = "$" + String(cashBalance)
         DispatchQueue.main.async() {
             getItemsView().removeFromSuperview()
             getItemsView().isHidden = true

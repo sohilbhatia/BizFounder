@@ -150,6 +150,14 @@ close2.contentMode = .center
 close2.imageView?.contentMode = .scaleAspectFit
 close2.isHidden = true
 
+let close3 = UIButton(type: UIButton.ButtonType.custom) as UIButton
+let close3View = UIImage(named: "mockButton.png") as UIImage?
+close3.frame = CGRect(x: -25, y: 222, width: 400, height: 60)
+close3.setImage(testView, for: [])
+close3.contentMode = .center
+close3.imageView?.contentMode = .scaleAspectFit
+close3.isHidden = true
+
 let funds = UIButton(type: UIButton.ButtonType.custom) as UIButton
 let fundsView = UIImage(named: "funds.png") as UIImage?
 funds.frame = CGRect(x: 110, y: 15, width: 400, height: 60)
@@ -194,6 +202,7 @@ class TitleViewController: UIViewController {
         view.addSubview(cashAmnt)
         view.addSubview(test)
         view.addSubview(close2)
+        view.addSubview(close3)
         
         
         
@@ -204,6 +213,7 @@ class TitleViewController: UIViewController {
         item.addTarget(self, action: #selector(storeAction), for: .touchDown)
         close2.addTarget(self, action: #selector(closeAction), for: .touchDown)
         emp.addTarget(self, action: #selector(empAction), for: .touchDown)
+        close3.addTarget(self, action: #selector(close3Action), for: .touchDown)
         
         i.alpha = 0
         i.isHidden = false
@@ -238,13 +248,17 @@ class TitleViewController: UIViewController {
         test.isHidden = false
     }
     @objc func empAction(sender: UIButton) {
-        getItemsView().alpha = 0
-        view.addSubview(getItemsView())
+        getEmployeeView().alpha = 0
+        view.addSubview(getEmployeeView())
         UIView.animate(withDuration: 3, delay: 2/10, options: .curveEaseOut, animations: {
-           getItemsView().alpha = 1
+           getEmployeeView().alpha = 1
         })
-        getItemsView().isHidden = false
-        test.isHidden = false
+        getEmployeeView().isHidden = false
+        close3.isHidden = false
+    }
+    
+    @objc func close3Action(sender: UIButton) {
+        close3.fadeOut()
     }
     
     @objc func closeAction(sender: UIButton) {
@@ -340,10 +354,10 @@ class TitleViewController: UIViewController {
                     item.alpha = 1
                 })
                 
-                empView.alpha = 0
-                empView.isHidden = false
+                emp.alpha = 0
+                emp.isHidden = false
                 UIView.animate(withDuration: 3, delay: 5/10, options: .curveEaseOut, animations: {
-                    empView.alpha = 1
+                    emp.alpha = 1
                 })
                 
                 markView.alpha = 0

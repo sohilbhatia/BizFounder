@@ -62,7 +62,7 @@ public class getStoreView: UIView {
         mLabel.font = UIFont(name: "Arial", size: 15.0)
         mLabel.textColor = UIColor.lightGray
         mLabel.frame.size.width = 150
-        mLabel.frame.size.height = 60
+        mLabel.frame.size.height = 30
         mLabel.frame.origin.x = 180
         mLabel.frame.origin.y = 400
         mLabel.isHidden = false
@@ -82,7 +82,7 @@ public class getStoreView: UIView {
         cPrice.backgroundColor = UIColor(red: 245/255, green: 245/255, blue: 245/255, alpha: 1)
         cPrice.font = UIFont(name: "Arial", size: 30.0)
         cPrice.frame.size.width = 300
-        cPrice.frame.size.height = 60
+        cPrice.frame.size.height = 50
         cPrice.frame.origin.x = 190
         cPrice.frame.origin.y = 120
         cPrice.isHidden = false
@@ -93,7 +93,7 @@ public class getStoreView: UIView {
         eView.frame.size.width = 100
         eView.frame.size.height = 100
         eView.frame.origin.x = 35
-        eView.frame.origin.y = 150
+        eView.frame.origin.y = 230
         eView.isHidden = false
         
         let ePrice = UITextView()
@@ -101,7 +101,7 @@ public class getStoreView: UIView {
         ePrice.backgroundColor = UIColor(red: 245/255, green: 245/255, blue: 245/255, alpha: 1)
         ePrice.font = UIFont(name: "Arial", size: 30.0)
         ePrice.frame.size.width = 300
-        ePrice.frame.size.height = 60
+        ePrice.frame.size.height = 50
         ePrice.frame.origin.x = 190
         ePrice.frame.origin.y = 240
         ePrice.isHidden = false
@@ -120,7 +120,7 @@ public class getStoreView: UIView {
         sPrice.backgroundColor = UIColor(red: 245/255, green: 245/255, blue: 245/255, alpha: 1)
         sPrice.font = UIFont(name: "Arial", size: 30.0)
         sPrice.frame.size.width = 300
-        sPrice.frame.size.height = 60
+        sPrice.frame.size.height = 50
         sPrice.frame.origin.x = 190
         sPrice.frame.origin.y = 360
         sPrice.isHidden = false

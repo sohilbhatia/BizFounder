@@ -2,9 +2,56 @@ import Cocoa
 import UIKit
 import PlaygroundSupport
 import SceneKit
-
+import SpriteKit
 
 public var loanVal = 0.0
+
+class EmitterView: UIView {
+  let emitterLayer = CAEmitterLayer()
+    
+  override init(frame: CGRect) {
+    super.init(frame: frame)
+
+    let cell = CAEmitterCell()
+    cell.birthRate = 0.8
+    
+    cell.lifetime = 10.0
+    cell.velocity = 30
+    cell.velocityRange = 50
+    cell.emissionLongitude = CGFloat.pi
+    cell.spinRange = 5
+    cell.spin = CGFloat(Double.pi * 2)
+    cell.scale = 0.5
+    cell.scaleRange = 0
+    cell.color = UIColor(white: 0, alpha: 1.0).cgColor
+    cell.alphaSpeed = Float(-0.025)
+    cell.contents = UIImage(named: "user.png")?.cgImage
+    
+    emitterLayer.emitterCells = [cell]
+    layer.addSublayer(emitterLayer)
+
+    backgroundColor = .white
+    
+    if (cell.l)
+  }
+
+  required init?(coder aDecoder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
+
+    override public func layoutSubviews() {
+    super.layoutSubviews()
+
+    emitterLayer.emitterPosition = CGPoint(x: 900, y: 300)
+    emitterLayer.emitterShape = CAEmitterLayerEmitterShape.circle
+    let degrees = 30.0
+    let radians = CGFloat(degrees * M_PI / 180)
+    emitterLayer.transform = CATransform3DMakeRotation(radians, 0.0, 0.0, 1.0)
+    //emitterLayer.setAffineTransform(CGAffineTransform(rotationAngle: -.pi))
+    emitterLayer.emitterSize = CGSize(width: 200, height: 500)
+    emitterLayer.renderMode = CAEmitterLayerRenderMode.additive
+  }
+}
 
 let frameOfMainView = CGSize(width: 900, height: 700)
 let title = UIImage(named: "TITLE.png")!
@@ -62,7 +109,7 @@ cashView.font = mainFont
 cashView.frame.size.width = 200
 cashView.frame.size.height = 60
 cashView.frame.origin.x = 420
-cashView.frame.origin.y = 900
+cashView.frame.origin.y = 850
 cashView.isHidden = true
 
 let worthAmnt = UITextView()
@@ -72,7 +119,7 @@ worthAmnt.font = mainFont
 worthAmnt.frame.size.width = 150
 worthAmnt.frame.size.height = 60
 worthAmnt.frame.origin.x = 200
-worthAmnt.frame.origin.y = 900
+worthAmnt.frame.origin.y = 850
 worthAmnt.isHidden = true
 
 let cashAmnt = UITextView()
@@ -82,7 +129,7 @@ cashAmnt.font = mainFont
 cashAmnt.frame.size.width = 150
 cashAmnt.frame.size.height = 60
 cashAmnt.frame.origin.x = 580
-cashAmnt.frame.origin.y = 900
+cashAmnt.frame.origin.y = 850
 cashAmnt.isHidden = true
 
 let netWrth = UITextView()
@@ -92,8 +139,19 @@ netWrth.font = mainFont
 netWrth.frame.size.width = 200
 netWrth.frame.size.height = 60
 netWrth.frame.origin.x = 40
-netWrth.frame.origin.y = 900
+netWrth.frame.origin.y = 850
 netWrth.isHidden = true
+
+let stopWatch = UITextView()
+stopWatch.text = "Net Worth: "
+stopWatch.backgroundColor = UIColor(red: 252/255, green: 252/255, blue: 252/255, alpha: 1)
+stopWatch.font = UIFont.boldSystemFont(ofSize: 20.0)
+stopWatch.font = mainFont
+stopWatch.frame.size.width = 200
+stopWatch.frame.size.height = 60
+stopWatch.frame.origin.x = 400
+stopWatch.frame.origin.y = 930
+stopWatch.isHidden = false
 
 
 let emp = UIButton(type: UIButton.ButtonType.custom) as UIButton
@@ -112,6 +170,16 @@ markView.frame.size.height = 60
 markView.frame.origin.x = 490
 markView.frame.origin.y = 15
 markView.isHidden = true
+
+let start = UIButton(type: UIButton.ButtonType.custom) as UIButton
+let startView = UIImage(named: "startButton.png") as UIImage?
+start.frame = CGRect(x: 270, y: 930, width: 60, height: 60)
+start.setImage(startView, for: [])
+start.contentMode = .center
+start.imageView?.contentMode = .scaleAspectFit
+start.isHidden = false
+
+
 
 let type = UIImage(named: "type.png")!
 let typeView = UIImageView(image: type)
@@ -203,8 +271,9 @@ class TitleViewController: UIViewController {
         view.addSubview(test)
         view.addSubview(close2)
         view.addSubview(close3)
-        
-        
+        view.addSubview(start)
+        view.addSubview(stopWatch)
+        view.addSubview(EmitterView())
         
         i.addTarget(self, action: #selector(iceAction), for: .touchDown)
         c.addTarget(self, action: #selector(coffeeAction), for: .touchDown)
@@ -214,9 +283,28 @@ class TitleViewController: UIViewController {
         close2.addTarget(self, action: #selector(closeAction), for: .touchDown)
         emp.addTarget(self, action: #selector(empAction), for: .touchDown)
         close3.addTarget(self, action: #selector(close3Action), for: .touchDown)
+        //start.addTarget(self, action: #selector(updateLabel), for: .touchDown)
         
         i.alpha = 0
         i.isHidden = false
+        
+        //let everyMinuteTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self,
+        //selector: #selector(updateLabel), userInfo: nil, repeats: true)
+        /*
+        override func didMoveToView(view: SKScene) {
+            let main = SKSpriteNode(imageNamed: "user")
+            main.xScale = 0.15
+            main.yScale = 0.15
+            main.zPosition = 1
+            let circle = UIBezierPath(rect: CGRect(x:600, y: 600, width:600, height:600))
+            let circularMove = SKAction.follow(circle.cgPath, asOffset: false, orientToPath: true, duration: 5)
+            main.run(SKAction.repeat(circularMove, count: 2))
+            view.addChild(main)
+        }
+       */
+        
+        
+        
         
         if (closed == true) {
             print("Hello")
@@ -247,6 +335,21 @@ class TitleViewController: UIViewController {
         getItemsView().isHidden = false
         test.isHidden = false
     }
+    
+    /*
+    @objc func updateLabel() {
+        var i = 0
+        while (i<=60) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                i+=1
+                stopWatch.text = String(i)
+            }
+            if (i==60) {
+                i=0
+            }
+        }
+    }
+ */
     @objc func empAction(sender: UIButton) {
         getEmployeeView().alpha = 0
         view.addSubview(getEmployeeView())
@@ -256,6 +359,20 @@ class TitleViewController: UIViewController {
         getEmployeeView().isHidden = false
         close3.isHidden = false
         
+    }
+    
+    @objc func startWatch(sender: UIButton) {
+        while true {
+            let df = DateFormatter()
+            df.dateStyle == .medium
+            df.dateFormat = "MMM dd, hh:mm:ss"
+            df.amSymbol = "AM"
+            df.pmSymbol = "PM"
+            let myDate = Date()
+            //let now = df.string(from: myDate)
+            myDate.adding(minutes: 1)
+            //stopWatch.text = now
+        }
     }
     
     @objc func close3Action(sender: UIButton) {
@@ -497,6 +614,12 @@ public extension UIView {
         if self.layer.animation(forKey: kAnimationKey) != nil {
             self.layer.removeAnimation(forKey: kAnimationKey)
         }
+    }
+}
+
+extension Date {
+    func adding(minutes: Int) -> Date {
+        return Calendar.current.date(byAdding: .minute, value: minutes, to: self)!
     }
 }
 

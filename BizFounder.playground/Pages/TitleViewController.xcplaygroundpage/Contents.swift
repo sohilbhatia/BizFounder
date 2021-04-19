@@ -255,10 +255,55 @@ class TitleViewController: UIViewController {
         })
         getEmployeeView().isHidden = false
         close3.isHidden = false
+        
     }
     
     @objc func close3Action(sender: UIButton) {
         close3.fadeOut()
+        let mDot = "managerDot.png"
+        let image = UIImage(named: mDot)
+        var i = 0
+        var space = 0
+        while(i<manQuant) {
+            let imageView = UIImageView(image: image!)
+            imageView.frame = CGRect(x: 620, y: 200 + space, width: 60, height: 56)
+            view.addSubview(imageView)
+            imageView.startRotating()
+            
+            
+            space += 180
+            i+=1
+        }
+        let bDot = "baristaDot.png"
+        let bImage = UIImage(named: bDot)
+        var b = 0
+        var spaceB = 0
+        print(servQuant)
+        while(b<baristQuant) {
+            let bView = UIImageView(image: bImage!)
+            bView.frame = CGRect(x: 120 + spaceB, y: 520, width: 51, height: 52)
+            view.addSubview(bView)
+            bView.startRotating()
+            
+            
+            spaceB += 180
+            b+=1
+        }
+        let sDot = "serverDot.png"
+        let sImage = UIImage(named: sDot)
+        var s = 0
+        var spaceS = 0
+        print(servQuant)
+        while(s<servQuant) {
+            let sView = UIImageView(image: sImage!)
+            sView.frame = CGRect(x: 480 - spaceS, y: 700, width: 60, height: 52)
+            view.addSubview(sView)
+            sView.startRotating()
+            
+            
+            spaceS += 180
+            s+=1
+        }
     }
     
     @objc func closeAction(sender: UIButton) {
@@ -431,6 +476,28 @@ func fadeO(duration: TimeInterval = 1.0) {
     })
   }
 
+}
+
+public extension UIView {
+    func startRotating(duration: Double = 1) {
+        let kAnimationKey = "rotation"
+         
+        if self.layer.animation(forKey: kAnimationKey) == nil {
+            let animate = CABasicAnimation(keyPath: "transform.rotation")
+            animate.duration = duration
+            animate.repeatCount = Float.infinity
+            animate.fromValue = 0.0
+            animate.toValue = Float(Double.pi * 2)
+            self.layer.add(animate, forKey: kAnimationKey)
+        }
+    }
+    func stopRotating() {
+        let kAnimationKey = "rotation"
+         
+        if self.layer.animation(forKey: kAnimationKey) != nil {
+            self.layer.removeAnimation(forKey: kAnimationKey)
+        }
+    }
 }
 
 

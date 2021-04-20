@@ -19,9 +19,17 @@ public class getItemsView: UIView {
     var loan = UITextField()
     @objc func getLoan() {
         if (loan.text == nil) {
-            loanValue = Double(loan.text!)!
+            self.isHidden = true
         }
-        self.isHidden = true
+        if (Double(loan.text!)! > 30000) {
+            loanValue = Double(30000)
+            self.isHidden = true
+        }
+        else {
+            loanValue = Double(loan.text!)!
+            self.isHidden = true
+        }
+        
     }
     
     override public init(frame: CGRect) {
@@ -36,6 +44,7 @@ public class getItemsView: UIView {
         loan.frame.origin.y = 115
         loan.textAlignment = .center
         loan.isHidden = false
+        loan.keyboardType = .numberPad
         
         loan.layer.shadowColor = UIColor.gray.cgColor
         loan.layer.shadowOpacity = 0.5

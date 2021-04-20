@@ -20,6 +20,24 @@ public class getStoreView: UIView {
         cQuantity = Float(cField.text!)!
         sQuantity = Float(sField.text!)!
         self.isHidden = true
+        if (eQuantity > 3) {
+            eQuantity = 3
+        }
+        if (cQuantity > 3) {
+            cQuantity = 3
+        }
+        if (sQuantity > 3) {
+            sQuantity = 3
+        }
+        if (eField.text == nil) {
+            self.isHidden = true
+        }
+        if (sField.text == nil) {
+            self.isHidden = true
+        }
+        if (cField.text == nil) {
+            self.isHidden = true
+        }
     }
     
     override public init(frame: CGRect) {

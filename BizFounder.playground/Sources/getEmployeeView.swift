@@ -22,6 +22,25 @@ public class getEmployeeView: UIView {
         servQuant = Float(sField.text!)!
         baristQuant = Float(bField.text!)!
         self.isHidden = true
+        
+        if (manQuant > 3) {
+            manQuant = 3
+        }
+        if (servQuant > 3) {
+            servQuant = 3
+        }
+        if (baristQuant > 3) {
+            baristQuant = 3
+        }
+        if (mField.text == nil) {
+            self.isHidden = true
+        }
+        if (sField.text == nil) {
+            self.isHidden = true
+        }
+        if (bField.text == nil) {
+            self.isHidden = true
+        }
     }
     
     override public init(frame: CGRect) {

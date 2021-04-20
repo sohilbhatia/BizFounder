@@ -1,8 +1,27 @@
+/*
+---------- Welcome to BizFounder --------------
+A Swift Playground by Sohil Bhatia - WWDC21 Swift Student Challenge!
+ 
+** Make sure to scroll a little bit down on the live view to see the full screen **
+ 
+How to Play:
+ 
+ -   Start your coffee business!
+ -   Start by obtaining funds with a Loan
+ -   ** Make sure to hit the blue X button to apply changes! **
+ -   Hire Employees! (Max Quantity 3 per employee)
+ -   Gather Equipment! (Max Quantity 3 per item)
+ -   Click the play button to make customers roll in!
+ Goal: Try to earn the highest Net Worth!
+
+
+*/
 import Cocoa
 import UIKit
 import PlaygroundSupport
 import SceneKit
 import SpriteKit
+import AVFoundation
 
 public var loanVal = 0.0
 public var createRate = 0.0
@@ -33,7 +52,13 @@ var cellLifetime = 30.0
 var roundedBalance = Double()
 var pausedBefore = false
 
+var audioPlayer: AVAudioPlayer!
 var customerVariance = 1
+var myTotalHourExpenses = 0.0
+
+
+
+
 
 class EmitterView: UIView {
   let emitterLayer = CAEmitterLayer()
@@ -316,24 +341,24 @@ sceneView.frame.origin.y = 0
 sceneView.isHidden = false
 
 let test = UIButton(type: UIButton.ButtonType.custom) as UIButton
-let testView = UIImage(named: "mockButton.png") as UIImage?
-test.frame = CGRect(x: -25, y: 222, width: 400, height: 60)
+let testView = UIImage(named: "mocButton.png") as UIImage?
+test.frame = CGRect(x: 500, y: 222, width: 400, height: 60)
 test.setImage(testView, for: [])
 test.contentMode = .center
 test.imageView?.contentMode = .scaleAspectFit
 test.isHidden = true
 
 let close2 = UIButton(type: UIButton.ButtonType.custom) as UIButton
-let close2View = UIImage(named: "mockButton.png") as UIImage?
-close2.frame = CGRect(x: -25, y: 222, width: 400, height: 60)
+let close2View = UIImage(named: "mocButton.png") as UIImage?
+close2.frame = CGRect(x: 500, y: 222, width: 400, height: 60)
 close2.setImage(testView, for: [])
 close2.contentMode = .center
 close2.imageView?.contentMode = .scaleAspectFit
 close2.isHidden = true
 
 let close3 = UIButton(type: UIButton.ButtonType.custom) as UIButton
-let close3View = UIImage(named: "mockButton.png") as UIImage?
-close3.frame = CGRect(x: -25, y: 222, width: 400, height: 60)
+let close3View = UIImage(named: "mocButton.png") as UIImage?
+close3.frame = CGRect(x: 500, y: 222, width: 400, height: 60)
 close3.setImage(testView, for: [])
 close3.contentMode = .center
 close3.imageView?.contentMode = .scaleAspectFit
@@ -349,7 +374,7 @@ funds.isHidden = true
 
 let c = UIButton(type: UIButton.ButtonType.custom) as UIButton
 let cTab = UIImage(named: "cTab.png") as UIImage?
-c.frame = CGRect(x: -240, y: 450, width: 900, height: 300)
+c.frame = CGRect(x: -50, y: 450, width: 900, height: 300)
 c.setImage(cTab, for: [])
 c.contentMode = .center
 c.imageView?.contentMode = .scaleAspectFit
@@ -363,12 +388,95 @@ i.contentMode = .center
 i.imageView?.contentMode = .scaleAspectFit
 i.isHidden = true
 
+public class getResultsView: UIView {
+    override public init(frame: CGRect) {
+        let title = UITextView()
+        title.text = "Congratulations!"
+        title.backgroundColor = UIColor(red: 245/255, green: 245/255, blue: 245/255, alpha: 1)
+        title.font = UIFont(name: "Arial", size: 25.0)
+        title.frame.size.width = 300
+        title.frame.size.height = 60
+        title.frame.origin.x = 160
+        title.frame.origin.y = 20
+        title.isHidden = false
+        
+        let result = UITextView()
+        result.text = "Your Net Worth Was: "
+        result.backgroundColor = UIColor(red: 245/255, green: 245/255, blue: 245/255, alpha: 1)
+        result.font = UIFont(name: "Arial", size: 40.0)
+        result.frame.size.width = 400
+        result.frame.size.height = 60
+        result.frame.origin.x = 85
+        result.frame.origin.y = 100
+        result.isHidden = false
+        
+        let final = UITextView()
+        final.text = "$" + String(netWorth) + "!"
+        final.backgroundColor = UIColor(red: 245/255, green: 245/255, blue: 245/255, alpha: 1)
+        final.font = UIFont(name: "Arial", size: 50.0)
+        final.frame.size.width = 300
+        final.frame.size.height = 60
+        final.frame.origin.x = 160
+        final.frame.origin.y = 180
+        final.isHidden = false
+        
+        
+        
+        super.init(frame: CGRect(x: 150, y: 270, width: 500, height: 300))
+        
+        self.addSubview(final)
+        self.addSubview(result)
+        self.addSubview(title)
+        
+        self.layer.borderWidth = 4
+        
+        self.layer.borderColor = UIColor(red:26/255, green:159/255, blue:237/255, alpha: 1).cgColor
+        self.backgroundColor = UIColor(red: 245/255, green: 245/255, blue: 245/255, alpha: 1)
+        
+        self.layer.shadowColor = UIColor(red:26/255, green:159/255, blue:237/255, alpha: 1).cgColor
+        self.layer.shadowOpacity = 0.5
+        self.layer.shadowOffset = .zero
+        self.layer.shadowRadius = 6
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+
+public class getWelcomeView: UIView {
+    override public init(frame: CGRect) {
+        let frameOfMainView = CGSize(width: 900, height: 700)
+        let title = UIImage(named: "welcome.png")!
+        let titleView = UIImageView(image: title)
+        titleView.image = title
+        titleView.frame.size.width = 745
+        titleView.frame.size.height = 140
+        titleView.frame.origin.x = 35
+        titleView.frame.origin.y = 65
+        
+        
+        
+        super.init(frame: CGRect(x: 150, y: 270, width: 1500, height: 3000))
+        
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 class TitleViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        
+        
+        
         view.backgroundColor = UIColor(red: 252/255, green: 252/255, blue: 252/255, alpha: 1)
         view.addSubview(titleView)
-        view.addSubview(i)
+        //view.addSubview(i)
         view.addSubview(c)
         view.addSubview(typeView)
         view.addSubview(sceneView)
@@ -447,6 +555,15 @@ class TitleViewController: UIViewController {
         UIView.animate(withDuration: 3, delay: 2/10, options: .curveEaseOut, animations: {
            c.alpha = 1
         })
+        let sound = Bundle.main.path(forResource: "bensound-theelevatorbossanova", ofType: "mp3")
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: URL(fileURLWithPath: sound!))
+            
+        }
+        catch{
+            print(error)
+        }
+        audioPlayer.play()
         
         
     }
@@ -498,6 +615,14 @@ class TitleViewController: UIViewController {
             currentDay!+=1
         }
         dayText.text = String(currentDay!)
+        if (currentDay == 2) {
+            for view in self.view.subviews {
+                view.removeFromSuperview()
+            }
+            view.addSubview(getResultsView())
+        }
+        //
+        
         
     }
     
@@ -555,6 +680,9 @@ class TitleViewController: UIViewController {
         currentCount! += Int(calcImpact()*2)
         let myPrice = calcPrice()
         cashBalance = cashBalance + Double((4*currentCount!) + Int(myPrice))
+        let difference = Double((4*currentCount!) + Int(myPrice)) - myTotalHourExpenses
+        netWorth = netWorth + Int(difference)
+        worthAmnt.text = "$" + String(Int(netWorth))
         cashAmnt.text = "$" + String(cashBalance)
         if currentCount! > maxCount! {
             updateTimer?.invalidate()
@@ -616,6 +744,8 @@ class TitleViewController: UIViewController {
         let itemExpenses = (eQuantity * Float(espressoPrice)) + (cQuantity * Float(cupPrice)) + (sQuantity * Float(steamerPrice))
         cashBalance = cashBalance - Double(itemExpenses)
         cashAmnt.text = "$" + String(cashBalance)
+        
+        
         close2.isHidden = true
         let cups = "cupRack.png"
         let image = UIImage(named: cups)
@@ -669,7 +799,7 @@ class TitleViewController: UIViewController {
         cashBalance = cashBalance + Double(loanValue)
         cashAmnt.text = "$" + String(cashBalance)
         netWorth = netWorth - Int(loanValue)
-        netWrth.text = "$" + String(netWorth)
+        worthAmnt.text = "$" + String(netWorth)
         DispatchQueue.main.async() {
             getItemsView().removeFromSuperview()
             getItemsView().isHidden = true
@@ -870,8 +1000,10 @@ func calcImpact() -> Float {
 }
 
 func startDeductions() {
-    let hourExpenses = (manQuant * Float(managerPrice)) + (servQuant * Float(serverPrice)) + (baristQuant * Float(bImpact))
+    var hourExpenses = (manQuant * Float(managerPrice)) + (servQuant * Float(serverPrice)) + (baristQuant * Float(bImpact))
+    hourExpenses = Float(myTotalHourExpenses)
     cashBalance = cashBalance - Double(hourExpenses)
+    
     cashAmnt.text = "$" + String(Int(cashBalance))
     
 }

@@ -3,13 +3,13 @@ import UIKit
 import PlaygroundSupport
 import XCPlayground
 
-public var managerPrice = 23
-public var baristaPrice = 12
+public var managerPrice = 23.0
+public var baristaPrice = 12.0
 public var serverPrice = 8.5
 
-public var manQuant = Int()
-public var baristQuant = Int()
-public var servQuant = Int()
+public var manQuant = Float()
+public var baristQuant = Float()
+public var servQuant = Float()
 
 public class getEmployeeView: UIView {
     
@@ -18,9 +18,9 @@ public class getEmployeeView: UIView {
     let sField = UITextField()
     
     @objc func hirePersonnel (sender: UIButton){
-        manQuant = Int(mField.text!)!
-        servQuant = Int(sField.text!)!
-        baristQuant = Int(bField.text!)!
+        manQuant = Float(mField.text!)!
+        servQuant = Float(sField.text!)!
+        baristQuant = Float(bField.text!)!
         self.isHidden = true
     }
     

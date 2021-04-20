@@ -6,9 +6,9 @@ import XCPlayground
 public var cupPrice = 1200
 public var espressoPrice = 6500
 public var steamerPrice = 4300
-public var eQuantity = Int()
-public var cQuantity = Int()
-public var sQuantity = Int()
+public var eQuantity = Float()
+public var cQuantity = Float()
+public var sQuantity = Float()
 
 public class getStoreView: UIView {
     let cField = UITextField()
@@ -16,9 +16,9 @@ public class getStoreView: UIView {
     let sField = UITextField()
     
     @objc func buyItems(sender: UIButton) {
-        eQuantity = Int(eField.text!)!
-        cQuantity = Int(cField.text!)!
-        sQuantity = Int(sField.text!)!
+        eQuantity = Float(eField.text!)!
+        cQuantity = Float(cField.text!)!
+        sQuantity = Float(sField.text!)!
         self.isHidden = true
     }
     

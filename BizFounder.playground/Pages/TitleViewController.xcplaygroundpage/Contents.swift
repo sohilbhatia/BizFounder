@@ -5,34 +5,75 @@ import SceneKit
 import SpriteKit
 
 public var loanVal = 0.0
+public var createRate = 0.0
+
+public var mImpact = 0.2
+public var sImpact = 0.1
+public var bImpact = 0.1
+
+public var espressoImpact = 0.05
+public var steamerImpact = 0.03
+public var cupsImpact = 0.01
+
+private var maxCount : Int?
+private var currentCount : Int?
+private var updateTimer : Timer?
+private var timerHour : Timer?
+private var timerDay : Timer?
+
+private var maxHour : Int?
+private var currentHour : Int?
+
+private var maxDay : Int?
+private var currentDay : Int?
+
+var removeCell = false
+var cellLifetime = 30.0
+
+var roundedBalance = Double()
 
 class EmitterView: UIView {
   let emitterLayer = CAEmitterLayer()
-    
+ 
   override init(frame: CGRect) {
     super.init(frame: frame)
+    var cells:[CAEmitterCell] = [CAEmitterCell]()
+    for index in 0..<2 {
+        let cell = CAEmitterCell()
 
-    let cell = CAEmitterCell()
-    cell.birthRate = 0.8
+        cell.birthRate = Float(createRate)
+        
+        cell.lifetime = Float(cellLifetime)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [self] in
+            emitterLayer.lifetime = 0
+        }
+ 
+        cell.velocity = 30
+        cell.velocityRange = 50
+        cell.emissionLongitude = CGFloat.pi
+        cell.spinRange = 5
+        cell.spin = CGFloat(Double.pi * 2)
+        cell.scale = 0.5
+        cell.scaleRange = 0
+        cell.color = UIColor(white: 0, alpha: 1.0).cgColor
+        cell.alphaSpeed = Float(-0.025)
+        cell.contents = UIImage(named: "user.png")?.cgImage
+        cell.name = "cell\(index)"
+        cells.append(cell)
+        
+        if (removeCell == true) {
+            cell.birthRate = 0
+            emitterLayer.isHidden = true
+            cell.lifetime = 0
+        }
+        
+    }
+    emitterLayer.emitterCells = cells
     
-    cell.lifetime = 10.0
-    cell.velocity = 30
-    cell.velocityRange = 50
-    cell.emissionLongitude = CGFloat.pi
-    cell.spinRange = 5
-    cell.spin = CGFloat(Double.pi * 2)
-    cell.scale = 0.5
-    cell.scaleRange = 0
-    cell.color = UIColor(white: 0, alpha: 1.0).cgColor
-    cell.alphaSpeed = Float(-0.025)
-    cell.contents = UIImage(named: "user.png")?.cgImage
-    
-    emitterLayer.emitterCells = [cell]
     layer.addSublayer(emitterLayer)
-
+    
     backgroundColor = .white
     
-    if (cell.l)
   }
 
   required init?(coder aDecoder: NSCoder) {
@@ -42,16 +83,35 @@ class EmitterView: UIView {
     override public func layoutSubviews() {
     super.layoutSubviews()
 
-    emitterLayer.emitterPosition = CGPoint(x: 900, y: 300)
+    emitterLayer.emitterPosition = CGPoint(x: 1500, y: 370)
     emitterLayer.emitterShape = CAEmitterLayerEmitterShape.circle
+        /*
+    let animation = CABasicAnimation(keyPath: "position.x")
+    animation.fromValue = 1500
+    animation.toValue = -40
+    animation.duration = 10
+ */
+    //emitterLayer.add(animation, forKey: "Reposition")
     let degrees = 30.0
-    let radians = CGFloat(degrees * M_PI / 180)
+    let radians = CGFloat(degrees * Double.pi / 180)
     emitterLayer.transform = CATransform3DMakeRotation(radians, 0.0, 0.0, 1.0)
     //emitterLayer.setAffineTransform(CGAffineTransform(rotationAngle: -.pi))
     emitterLayer.emitterSize = CGSize(width: 200, height: 500)
     emitterLayer.renderMode = CAEmitterLayerRenderMode.additive
+        
+        if (emitterLayer.isHidden == true) {
+            print("HELLO")
+        }
+        
   }
 }
+
+
+func hideEmitter() {
+    EmitterView().isHidden = true
+}
+
+
 
 let frameOfMainView = CGSize(width: 900, height: 700)
 let title = UIImage(named: "TITLE.png")!
@@ -72,16 +132,17 @@ loan.frame.origin.x = 320
 loan.frame.origin.y = 300
 loan.isHidden = false
 
-var cashBalance = Int()
+var cashBalance = Double()
 var netWorth = Int()
 
 netWorth = 25000
-cashBalance = 25000
+cashBalance = 25000.0
 
 //let cfURL = Bundle.main.url(forResource: "Comfortaa-Bold", withExtension: "tff")! as CFURL
 //CTFontManagerRegisterFontsForURL(cfURL, CTFontManagerScope.process, nil)
 
 let mainFont = UIFont(name: "Arial", size:  30.0)
+let altFont = UIFont(name: "Arial", size: 25.0)
 
 let business = UIImage(named: "businessSpace.png")!
 let businessView = UIImageView(image: business)
@@ -123,11 +184,11 @@ worthAmnt.frame.origin.y = 850
 worthAmnt.isHidden = true
 
 let cashAmnt = UITextView()
-cashAmnt.text = "$" + String(cashBalance + Int(loanValue))
+cashAmnt.text = "$" + String(cashBalance + Double(loanValue))
 cashAmnt.backgroundColor = UIColor(red: 252/255, green: 252/255, blue: 252/255, alpha: 1)
 cashAmnt.font = mainFont
-cashAmnt.frame.size.width = 150
-cashAmnt.frame.size.height = 60
+cashAmnt.frame.size.width = 130
+cashAmnt.frame.size.height = 40
 cashAmnt.frame.origin.x = 580
 cashAmnt.frame.origin.y = 850
 cashAmnt.isHidden = true
@@ -143,15 +204,15 @@ netWrth.frame.origin.y = 850
 netWrth.isHidden = true
 
 let stopWatch = UITextView()
-stopWatch.text = "Net Worth: "
+stopWatch.text = "Number of Customers: "
 stopWatch.backgroundColor = UIColor(red: 252/255, green: 252/255, blue: 252/255, alpha: 1)
 stopWatch.font = UIFont.boldSystemFont(ofSize: 20.0)
 stopWatch.font = mainFont
-stopWatch.frame.size.width = 200
+stopWatch.frame.size.width = 400
 stopWatch.frame.size.height = 60
-stopWatch.frame.origin.x = 400
-stopWatch.frame.origin.y = 930
-stopWatch.isHidden = false
+stopWatch.frame.origin.x = 40
+stopWatch.frame.origin.y = 915
+stopWatch.isHidden = true
 
 
 let emp = UIButton(type: UIButton.ButtonType.custom) as UIButton
@@ -171,13 +232,64 @@ markView.frame.origin.x = 490
 markView.frame.origin.y = 15
 markView.isHidden = true
 
+let day = UIButton(type: UIButton.ButtonType.custom) as UIButton
+let dayView = UIImage(named: "day.png") as UIImage?
+day.frame = CGRect(x: 580, y: 15, width: 80, height: 80)
+day.setImage(dayView, for: [])
+day.contentMode = .center
+day.imageView?.contentMode = .scaleAspectFit
+day.isHidden = true
+
+
+let dayText = UITextView()
+dayText.text = "0"
+dayText.backgroundColor = UIColor(red: 26/255, green: 159/255, blue: 237/255, alpha: 1)
+dayText.font = UIFont.boldSystemFont(ofSize: 35.0)
+dayText.font = altFont
+dayText.textColor = UIColor.white
+dayText.frame.size.width = 45
+dayText.frame.size.height = 31
+dayText.frame.origin.x = 610
+dayText.frame.origin.y = 45
+dayText.isHidden = true
+
+
+let hour = UIButton(type: UIButton.ButtonType.custom) as UIButton
+let hourView = UIImage(named: "hour.png") as UIImage?
+hour.frame = CGRect(x: 670, y: 15, width: 80, height: 80)
+hour.setImage(hourView, for: [])
+hour.contentMode = .center
+hour.imageView?.contentMode = .scaleAspectFit
+hour.isHidden = true
+
+let hourText = UITextView()
+hourText.text = "0"
+hourText.backgroundColor = UIColor(red: 26/255, green: 159/255, blue: 237/255, alpha: 1)
+hourText.font = UIFont.boldSystemFont(ofSize: 28.0)
+hourText.font = altFont
+hourText.textColor = UIColor.white
+hourText.frame.size.width = 45
+hourText.frame.size.height = 31
+hourText.frame.origin.x = 700
+hourText.frame.origin.y = 45
+hourText.isHidden = true
+
+
 let start = UIButton(type: UIButton.ButtonType.custom) as UIButton
 let startView = UIImage(named: "startButton.png") as UIImage?
-start.frame = CGRect(x: 270, y: 930, width: 60, height: 60)
+start.frame = CGRect(x: 450, y: 910, width: 60, height: 60)
 start.setImage(startView, for: [])
 start.contentMode = .center
 start.imageView?.contentMode = .scaleAspectFit
-start.isHidden = false
+start.isHidden = true
+
+let myPause = UIButton(type: UIButton.ButtonType.custom) as UIButton
+let myPauseView = UIImage(named: "pause.png") as UIImage?
+myPause.frame = CGRect(x: 550, y: 910, width: 60, height: 60)
+myPause.setImage(myPauseView, for: [])
+myPause.contentMode = .center
+myPause.imageView?.contentMode = .scaleAspectFit
+myPause.isHidden = true
 
 
 
@@ -263,7 +375,7 @@ class TitleViewController: UIViewController {
         view.addSubview(item)
         view.addSubview(funds)
         view.addSubview(emp)
-        view.addSubview(markView)
+        //view.addSubview(markView)
         view.addSubview(cashView)
         view.addSubview(netWrth)
         view.addSubview(worthAmnt)
@@ -273,7 +385,15 @@ class TitleViewController: UIViewController {
         view.addSubview(close3)
         view.addSubview(start)
         view.addSubview(stopWatch)
-        view.addSubview(EmitterView())
+        view.addSubview(myPause)
+        view.addSubview(day)
+        view.addSubview(hour)
+        view.addSubview(dayText)
+        view.addSubview(hourText)
+       // view.addSubview(EmitterView())
+        
+        
+      
         
         i.addTarget(self, action: #selector(iceAction), for: .touchDown)
         c.addTarget(self, action: #selector(coffeeAction), for: .touchDown)
@@ -283,7 +403,10 @@ class TitleViewController: UIViewController {
         close2.addTarget(self, action: #selector(closeAction), for: .touchDown)
         emp.addTarget(self, action: #selector(empAction), for: .touchDown)
         close3.addTarget(self, action: #selector(close3Action), for: .touchDown)
-        //start.addTarget(self, action: #selector(updateLabel), for: .touchDown)
+        start.addTarget(self, action: #selector(updateLabel), for: .touchDown)
+        myPause.addTarget(self, action: #selector(pause), for: .touchDown)
+        day.addTarget(self, action: #selector(dayTimer), for: .touchDown)
+        hour.addTarget(self, action: #selector(hourTimer), for: .touchDown)
         
         i.alpha = 0
         i.isHidden = false
@@ -308,7 +431,7 @@ class TitleViewController: UIViewController {
         
         if (closed == true) {
             print("Hello")
-            cashBalance += Int(loanValue)
+            cashBalance += Double(loanValue)
         }
         UIView.animate(withDuration: 3, delay: 5/10, options: .curveEaseOut, animations: {
            i.alpha = 1
@@ -336,8 +459,58 @@ class TitleViewController: UIViewController {
         test.isHidden = false
     }
     
-    /*
+    @objc func pause(sender: UIButton) {
+        createRate = 0.0
+        cellLifetime = 0.0
+        updateTimer?.invalidate()
+        EmitterView().removeFromSuperview()
+        view.sendSubviewToBack(EmitterView())
+        EmitterView().isHidden = true
+    }
+    @objc func hourTimer() {
+        hourText.text = String(currentHour!)
+        currentHour! += 1
+        startDeductions()
+        if currentHour! > maxHour! {
+            
+            maxDay!+=1
+            
+            DispatchQueue.main.async { [self] in
+                timerDay = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(dayTimer), userInfo: nil, repeats: true)
+                if (currentDay == nil) {
+                    currentDay = 0
+                }
+                currentHour = 0
+                
+            }
+ 
+        }
+    }
+    @objc func dayTimer() {
+        dayText.text = String(currentDay!)
+        if currentDay! < maxDay! {
+            currentDay!+=1
+        }
+    }
+    
     @objc func updateLabel() {
+        customerFormula()
+        view.addSubview(EmitterView())
+        if (EmitterView().isHidden == true) {
+            print("HELLO")
+        }
+        DispatchQueue.main.async { [self] in
+            maxCount = 100
+            currentCount = 0
+            updateTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(startWatch), userInfo: nil, repeats: true)
+        }
+        DispatchQueue.main.async { [self] in
+            maxHour = 24
+            currentHour = 0
+            maxDay = 0
+            timerHour = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(hourTimer), userInfo: nil, repeats: true)
+        }
+        /*
         var i = 0
         while (i<=60) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
@@ -348,8 +521,9 @@ class TitleViewController: UIViewController {
                 i=0
             }
         }
+         */
     }
- */
+
     @objc func empAction(sender: UIButton) {
         getEmployeeView().alpha = 0
         view.addSubview(getEmployeeView())
@@ -362,16 +536,15 @@ class TitleViewController: UIViewController {
     }
     
     @objc func startWatch(sender: UIButton) {
-        while true {
-            let df = DateFormatter()
-            df.dateStyle == .medium
-            df.dateFormat = "MMM dd, hh:mm:ss"
-            df.amSymbol = "AM"
-            df.pmSymbol = "PM"
-            let myDate = Date()
-            //let now = df.string(from: myDate)
-            myDate.adding(minutes: 1)
-            //stopWatch.text = now
+        stopWatch.text = "Number of Customers: " + String(currentCount!)
+        currentCount! += 1
+        cashBalance = cashBalance + Double(4)
+        cashAmnt.text = "$" + String(cashBalance)
+        if currentCount! > maxCount! {
+            updateTimer?.invalidate()
+            updateTimer = nil
+            maxCount = nil
+            currentCount = nil
         }
     }
     
@@ -381,7 +554,7 @@ class TitleViewController: UIViewController {
         let image = UIImage(named: mDot)
         var i = 0
         var space = 0
-        while(i<manQuant) {
+        while(i<Int(manQuant)) {
             let imageView = UIImageView(image: image!)
             imageView.frame = CGRect(x: 620, y: 200 + space, width: 60, height: 56)
             view.addSubview(imageView)
@@ -396,7 +569,7 @@ class TitleViewController: UIViewController {
         var b = 0
         var spaceB = 0
         print(servQuant)
-        while(b<baristQuant) {
+        while(b<Int(baristQuant)) {
             let bView = UIImageView(image: bImage!)
             bView.frame = CGRect(x: 120 + spaceB, y: 520, width: 51, height: 52)
             view.addSubview(bView)
@@ -411,7 +584,7 @@ class TitleViewController: UIViewController {
         var s = 0
         var spaceS = 0
         print(servQuant)
-        while(s<servQuant) {
+        while(s<Int(servQuant)) {
             let sView = UIImageView(image: sImage!)
             sView.frame = CGRect(x: 480 - spaceS, y: 700, width: 60, height: 52)
             view.addSubview(sView)
@@ -424,15 +597,15 @@ class TitleViewController: UIViewController {
     }
     
     @objc func closeAction(sender: UIButton) {
-        let itemExpenses = (eQuantity * espressoPrice) + (cQuantity * cupPrice) + (sQuantity * steamerPrice)
-        cashBalance = cashBalance - Int(itemExpenses)
+        let itemExpenses = (eQuantity * Float(espressoPrice)) + (cQuantity * Float(cupPrice)) + (sQuantity * Float(steamerPrice))
+        cashBalance = cashBalance - Double(itemExpenses)
         cashAmnt.text = "$" + String(cashBalance)
         close2.isHidden = true
         let cups = "cupRack.png"
         let image = UIImage(named: cups)
         var i = 0
         var space = 0
-        while(i<cQuantity) {
+        while(i<Int(cQuantity)) {
             let imageView = UIImageView(image: image!)
             imageView.frame = CGRect(x: 120 + space, y: 200, width: 120, height: 135)
             view.addSubview(imageView)
@@ -443,7 +616,7 @@ class TitleViewController: UIViewController {
         let espImage = UIImage(named: esp)
         var a = 0
         var aSpace = 0
-        while(a<eQuantity) {
+        while(a<Int(eQuantity)) {
             let espView = UIImageView(image: espImage!)
             espView.frame = CGRect(x: 120 + aSpace, y: 390, width: 96, height: 108)
             view.addSubview(espView)
@@ -454,7 +627,7 @@ class TitleViewController: UIViewController {
         let steaImage = UIImage(named: stea)
         var s = 0
         var sSpace = 0
-        while(s<sQuantity) {
+        while(s<Int(sQuantity)) {
             let steaView = UIImageView(image: steaImage!)
             steaView.frame = CGRect(x: 120 + sSpace, y: 580, width: 96, height: 108)
             view.addSubview(steaView)
@@ -476,7 +649,7 @@ class TitleViewController: UIViewController {
     
     @objc func add(sender: UIButton) {
         print(getItemsView().isHidden)
-        cashBalance = cashBalance + Int(loanValue)
+        cashBalance = cashBalance + Double(loanValue)
         cashAmnt.text = "$" + String(cashBalance)
         DispatchQueue.main.async() {
             getItemsView().removeFromSuperview()
@@ -534,6 +707,46 @@ class TitleViewController: UIViewController {
                 UIView.animate(withDuration: 3, delay: 5/10, options: .curveEaseOut, animations: {
                     funds.alpha = 1
                 })
+                
+                start.alpha = 0
+                start.isHidden = false
+                UIView.animate(withDuration: 3, delay: 5/10, options: .curveEaseOut, animations: {
+                    start.alpha = 1
+                })
+                
+                myPause.alpha = 0
+                myPause.isHidden = false
+                UIView.animate(withDuration: 3, delay: 5/10, options: .curveEaseOut, animations: {
+                    myPause.alpha = 1
+                })
+                
+                hour.alpha = 0
+                hour.isHidden = false
+                UIView.animate(withDuration: 3, delay: 5/10, options: .curveEaseOut, animations: {
+                    hour.alpha = 1
+                })
+                hourText.alpha = 0
+                hourText.isHidden = false
+                UIView.animate(withDuration: 3, delay: 5/10, options: .curveEaseOut, animations: {
+                    hourText.alpha = 1
+                })
+                day.alpha = 0
+                day.isHidden = false
+                UIView.animate(withDuration: 3, delay: 5/10, options: .curveEaseOut, animations: {
+                    day.alpha = 1
+                })
+                dayText.alpha = 0
+                dayText.isHidden = false
+                UIView.animate(withDuration: 3, delay: 5/10, options: .curveEaseOut, animations: {
+                    dayText.alpha = 1
+                })
+                
+                stopWatch.alpha = 0
+                stopWatch.isHidden = false
+                UIView.animate(withDuration: 3, delay: 5/10, options: .curveEaseOut, animations: {
+                    stopWatch.alpha = 1
+                })
+                
                 cashView.alpha = 0
                 cashView.isHidden = false
                 cashView.fadeIn()
@@ -594,6 +807,46 @@ func fadeO(duration: TimeInterval = 1.0) {
   }
 
 }
+
+func customerFormula() {
+    
+    if (manQuant == 0) {
+        createRate = 0.0
+    }
+    if (servQuant == 0) {
+        createRate = 0.0
+    }
+    if (baristQuant == 0) {
+        createRate = 0.0
+    }
+    if (eQuantity == 0.0) {
+        createRate = 0.0
+    }
+    if (sQuantity == 0.0) {
+        createRate = 0.0
+    }
+    if (cQuantity == 0) {
+        createRate = 0.0
+    }
+    else {
+        createRate = Double(calcImpact())
+    }
+}
+
+func calcImpact() -> Float {
+    let employeeImpact = (manQuant * Float(mImpact)) + (servQuant * Float(sImpact)) + (baristQuant * Float(bImpact))
+    let machineImpact = (eQuantity * Float(espressoImpact)) + (sQuantity * Float(sImpact)) + (cQuantity * Float(cupsImpact))
+    let totalImpact = employeeImpact + machineImpact
+    return totalImpact
+}
+
+func startDeductions() {
+    let hourExpenses = (manQuant * Float(managerPrice)) + (servQuant * Float(serverPrice)) + (baristQuant * Float(bImpact))
+    cashBalance = cashBalance - Double(hourExpenses)
+    cashAmnt.text = "$" + String(Int(cashBalance))
+    
+}
+
 
 public extension UIView {
     func startRotating(duration: Double = 1) {

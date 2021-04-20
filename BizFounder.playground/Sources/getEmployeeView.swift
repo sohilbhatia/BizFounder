@@ -80,7 +80,7 @@ public class getEmployeeView: UIView {
         mView.isHidden = false
         
         let mPrice = UITextView()
-        mPrice.text = "$" + String(managerPrice) + "/hour"
+        mPrice.text = "$" + String(Int(managerPrice)) + "/hour"
         mPrice.backgroundColor = UIColor(red: 245/255, green: 245/255, blue: 245/255, alpha: 1)
         mPrice.font = UIFont(name: "Arial", size: 30.0)
         mPrice.frame.size.width = 300
@@ -99,7 +99,7 @@ public class getEmployeeView: UIView {
         bView.isHidden = false
         
         let bPrice = UITextView()
-        bPrice.text = "$" + String(baristaPrice) + "/hour"
+        bPrice.text = "$" + String(Int(baristaPrice)) + "/hour"
         bPrice.backgroundColor = UIColor(red: 245/255, green: 245/255, blue: 245/255, alpha: 1)
         bPrice.font = UIFont(name: "Arial", size: 30.0)
         bPrice.frame.size.width = 300
@@ -118,7 +118,7 @@ public class getEmployeeView: UIView {
         sView.isHidden = false
         
         let sPrice = UITextView()
-        sPrice.text = "$" + String(serverPrice) + "/hour"
+        sPrice.text = "$" + String(Int(serverPrice)) + "/hour"
         sPrice.backgroundColor = UIColor(red: 245/255, green: 245/255, blue: 245/255, alpha: 1)
         sPrice.font = UIFont(name: "Arial", size: 30.0)
         sPrice.frame.size.width = 300

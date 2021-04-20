@@ -18,7 +18,9 @@ public class getItemsView: UIView {
     }
     var loan = UITextField()
     @objc func getLoan() {
-        loanValue = Double(loan.text!)!
+        if (loan.text == nil) {
+            loanValue = Double(loan.text!)!
+        }
         self.isHidden = true
     }
     

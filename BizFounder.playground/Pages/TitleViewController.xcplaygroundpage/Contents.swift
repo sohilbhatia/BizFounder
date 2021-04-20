@@ -31,6 +31,9 @@ var removeCell = false
 var cellLifetime = 30.0
 
 var roundedBalance = Double()
+var pausedBefore = false
+
+var customerVariance = 1
 
 class EmitterView: UIView {
   let emitterLayer = CAEmitterLayer()
@@ -43,10 +46,8 @@ class EmitterView: UIView {
 
         cell.birthRate = Float(createRate)
         
-        cell.lifetime = Float(cellLifetime)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [self] in
-            emitterLayer.lifetime = 0
-        }
+        cell.lifetime = Float(500)
+        
  
         cell.velocity = 30
         cell.velocityRange = 50
@@ -187,7 +188,7 @@ let cashAmnt = UITextView()
 cashAmnt.text = "$" + String(cashBalance + Double(loanValue))
 cashAmnt.backgroundColor = UIColor(red: 252/255, green: 252/255, blue: 252/255, alpha: 1)
 cashAmnt.font = mainFont
-cashAmnt.frame.size.width = 130
+cashAmnt.frame.size.width = 120
 cashAmnt.frame.size.height = 40
 cashAmnt.frame.origin.x = 580
 cashAmnt.frame.origin.y = 850
@@ -457,12 +458,17 @@ class TitleViewController: UIViewController {
         })
         getItemsView().isHidden = false
         test.isHidden = false
+        funds.isEnabled = false
+        
     }
     
     @objc func pause(sender: UIButton) {
         createRate = 0.0
         cellLifetime = 0.0
         updateTimer?.invalidate()
+        timerHour?.invalidate()
+        timerDay?.invalidate()
+        pausedBefore = true
         EmitterView().removeFromSuperview()
         view.sendSubviewToBack(EmitterView())
         EmitterView().isHidden = true
@@ -471,6 +477,7 @@ class TitleViewController: UIViewController {
         hourText.text = String(currentHour!)
         currentHour! += 1
         startDeductions()
+        print(maxHour)
         if currentHour! > maxHour! {
             
             maxDay!+=1
@@ -487,10 +494,11 @@ class TitleViewController: UIViewController {
         }
     }
     @objc func dayTimer() {
-        dayText.text = String(currentDay!)
         if currentDay! < maxDay! {
             currentDay!+=1
         }
+        dayText.text = String(currentDay!)
+        
     }
     
     @objc func updateLabel() {
@@ -501,12 +509,18 @@ class TitleViewController: UIViewController {
         }
         DispatchQueue.main.async { [self] in
             maxCount = 100
-            currentCount = 0
+            if (pausedBefore == false) {
+                currentCount = 0
+            }
+            
+            
             updateTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(startWatch), userInfo: nil, repeats: true)
         }
         DispatchQueue.main.async { [self] in
             maxHour = 24
-            currentHour = 0
+            if (pausedBefore == false) {
+                currentHour = 0
+            }
             maxDay = 0
             timerHour = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(hourTimer), userInfo: nil, repeats: true)
         }
@@ -532,13 +546,15 @@ class TitleViewController: UIViewController {
         })
         getEmployeeView().isHidden = false
         close3.isHidden = false
+        emp.isEnabled = false
         
     }
     
     @objc func startWatch(sender: UIButton) {
         stopWatch.text = "Number of Customers: " + String(currentCount!)
-        currentCount! += 1
-        cashBalance = cashBalance + Double(4)
+        currentCount! += Int(calcImpact()*2)
+        let myPrice = calcPrice()
+        cashBalance = cashBalance + Double((4*currentCount!) + Int(myPrice))
         cashAmnt.text = "$" + String(cashBalance)
         if currentCount! > maxCount! {
             updateTimer?.invalidate()
@@ -645,12 +661,15 @@ class TitleViewController: UIViewController {
         })
         getStoreView().isHidden = false
         close2.isHidden = false
+        item.isEnabled = false
     }
     
     @objc func add(sender: UIButton) {
         print(getItemsView().isHidden)
         cashBalance = cashBalance + Double(loanValue)
         cashAmnt.text = "$" + String(cashBalance)
+        netWorth = netWorth - Int(loanValue)
+        netWrth.text = "$" + String(netWorth)
         DispatchQueue.main.async() {
             getItemsView().removeFromSuperview()
             getItemsView().isHidden = true
@@ -831,6 +850,16 @@ func customerFormula() {
     else {
         createRate = Double(calcImpact())
     }
+}
+
+
+
+func calcPrice() -> Float {
+    
+    let employeeImpact = (manQuant * Float(mImpact)) + (servQuant * Float(sImpact)) + (baristQuant * Float(bImpact))
+    let machineImpact = (eQuantity * Float(espressoImpact)) + (sQuantity * Float(sImpact)) + (cQuantity * Float(cupsImpact))
+    let totalImpact = (employeeImpact + machineImpact) * 1.2
+    return totalImpact
 }
 
 func calcImpact() -> Float {
